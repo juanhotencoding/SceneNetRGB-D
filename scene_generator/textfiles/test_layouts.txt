@@ -1,0 +1,10 @@
+./bathroom/bathroom2_layout.obj
+./bathroom/bathroom11_layout.obj
+./bedroom/bedroom6_layout.obj
+./bedroom/bedroom7_layout.obj
+./kitchen/kitchen1_layout.obj
+./kitchen/kitchen5_layout.obj
+./livingroom/livingroom1_layout.obj
+./livingroom/livingroom4_layout.obj
+./office/office4_layout.obj
+./office/office12_layout.obj

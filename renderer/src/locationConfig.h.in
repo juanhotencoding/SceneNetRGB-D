@@ -1,0 +1,2 @@
+#define RESOURCES_DIR "@RESOURCES_DIR@"
+#define PTX_DIR "@PTX_DIR@"
