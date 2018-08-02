@@ -136,12 +136,12 @@ bool BaseScene::trace(std::string save_name_base, int frame_num) {
   save_name = save_name_base+std::to_string(frame_num)+"_instance.png";
   std::cout<<"Instance saving here:"<<save_name<<std::endl;
   sutil::displayBufferPPM(save_name.c_str(),getRawOutputBuffer()->get());
-
+/*
   m_render_type = RenderType::DEPTH;
   save_name = save_name_base+std::to_string(frame_num)+"_depth.png";
   std::cout<<"Depth saving here:"<<save_name<<std::endl;
   sutil::displayBufferPPM(save_name.c_str(),getRawOutputBuffer()->get());
-
+*/
   return true;
 }
 
