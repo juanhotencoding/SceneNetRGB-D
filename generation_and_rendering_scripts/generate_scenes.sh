@@ -22,40 +22,49 @@ NUM_SCENES=100
 
 for (( c=0; c<$NUM_SCENES; c++ ))
 do
-	echo "Creating Scene Number ${c}"
+	
 
 	# Start in ~/
 	cd
 
 	# Move to scene generator
 	cd $SCENE_GENERATOR_DIR
-
-	echo "Starting Scene Generator"
 	
-	# Create a file to store the output of terminal
-	touch scene_output_${c}.txt
-
-	# Run scenenet_room_generator until it returns a successful exit status
-	until ./scenenet_room_generator $SHAPENET $LAYOUTS $c >> scene_output_${c}.txt
-	do
-		echo "ERROR...REGENERATING SCENE..."
-	done
-
-	echo "Done generating scene description file"
-
-	# Make a directory to store scene info
-
-	if [ ! -d "scenes" ]
-	then
-		mkdir scenes
-		mkdir scenes/scene_${c}
-		mv scene_description_${c}.txt scenes/scene_${c}/
-		mv scene_output_${c}.txt scenes/scene_${c}/
+	# check if scene already exists
+	if [ -d "scenes/scene_${c}" ]
+	then 
+		echo "Scene ${c} Already Exists..."
+		echo "Generating Next Scene"
+		continue
 	else
-		mkdir scenes/scene_${c}
-		mv scene_description_${c}.txt scenes/scene_${c}/
-		mv scene_output_${c}.txt scenes/scene_${c}/
-	fi
+		echo "Creating Scene Number ${c}"
+		echo "Starting Scene Generator"
+	
+		# Create a file to store the output of terminal
+		touch scene_output_${c}.txt
+
+		# Run scenenet_room_generator until it returns a successful exit status
+		until ./scenenet_room_generator $SHAPENET $LAYOUTS $c >> scene_output_${c}.txt
+		do
+			echo "ERROR...REGENERATING SCENE..."
+		done
+
+		echo "Done generating scene description file"
+
+		# Make a directory to store scene info
+
+		if [ ! -d "scenes" ]
+		then
+			mkdir scenes
+			mkdir scenes/scene_${c}
+			mv scene_description_${c}.txt scenes/scene_${c}/
+			mv scene_output_${c}.txt scenes/scene_${c}/
+		else
+			mkdir scenes/scene_${c}
+			mv scene_description_${c}.txt scenes/scene_${c}/
+			mv scene_output_${c}.txt scenes/scene_${c}/
+		fi
+	fi 
 
 done
 
