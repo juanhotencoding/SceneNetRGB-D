@@ -1,70 +1,86 @@
 #!/bin/bash
 
-# Script that runs the commands needed to make the scene description files
-# that will be used when generating the random camera trajectory
+# Script that runs the commands needed to make a scene description file
+# that will be used when making the camera trajectory file
 
-# Directories, Datasets, and File paths
+# Directories, Datasets, and File Paths
+SCENENET_DIR=Documents/scenenet/src
+SCENE_GENERATOR_DIR=$SCENENET_DIR/scene_generator/build
+SHAPENET=../../../ShapeNetCore.v2/
+SCENE_LAYOUTS=../../../SceneNetRGBD_Layouts/
+SCENE_DATASET=../../../scene_dataset
+OLD_SCENES=`find ../scenes/* -maxdepth 0 -type d | wc -l`
+NEW_SCENES=$1
 
-# Location of the pipeline
-SCENENET_DIR=
+if [ "$NEW_SCENES" != "" ]; then
+        echo "Creating ${NEW_SCENES} New Scenes"
+else
+        echo "Please provide the amount of new scenes you wish to create" 
+        read NEW_SCENES
+        echo "Creating ${NEW_SCENES} New Scenes"
+fi
+# if we don't have a file, start at zero
+if [ ! -f "scenes.dat" ] ; then
+  value=${OLD_SCENES}
 
-# Location of scene generator
-SCENE_GENERATOR_DIR=
+# otherwise read the value from the file
+else
+  value=`cat scenes.dat`
+fi
 
-# location of ShapeNet Database
-SHAPENET=
+# increment the value
+value=`expr ${value} + ${NEW_SCENES}`
 
-# Location of SceneNet RGB-D scene layouts
-LAYOUTS=
+# show it to the user
+# echo "value: ${value}"
+echo "For a total of ${value} scenes"
 
-# Number of scenes you want to generate
-NUM_SCENES=100
+# and save it for next time
+echo "${value}" > scenes.dat
 
-for (( c=0; c<$NUM_SCENES; c++ ))
+
+for (( c=0; c<${value}; c++))
+
 do
-	
-
 	# Start in ~/
-	cd
+	cd 
 
-	# Move to scene generator
+	# First Component, Generate Scene
 	cd $SCENE_GENERATOR_DIR
-	
-	# check if scene already exists
-	if [ -d "scenes/scene_${c}" ]
+
+	if [ -d "../../../../scenes/scene_${c}" ]
 	then 
-		echo "Scene ${c} Already Exists..."
-		echo "Generating Next Scene"
+		echo "Scene ${c} Already Exists"
 		continue
 	else
-		echo "Creating Scene Number ${c}"
+		echo "Creating Scene Number $c"
 		echo "Starting Scene Generator"
-	
-		# Create a file to store the output of terminal
 		touch scene_output_${c}.txt
-
-		# Run scenenet_room_generator until it returns a successful exit status
-		until ./scenenet_room_generator $SHAPENET $LAYOUTS $c >> scene_output_${c}.txt
+		until ./scenenet_room_generator $SHAPENET $SCENE_LAYOUTS $c > scene_output_${c}.txt
+	
 		do
 			echo "ERROR...REGENERATING SCENE..."
 		done
 
 		echo "Done generating scene description file"
 
-		# Make a directory to store scene info
 
-		if [ ! -d "scenes" ]
+		if [ ! -d "../../../../scenes" ]
+	
 		then
-			mkdir scenes
+			mkdir ../../../../scenes
 			mkdir scenes/scene_${c}
-			mv scene_description_${c}.txt scenes/scene_${c}/
-			mv scene_output_${c}.txt scenes/scene_${c}/
+			mv scene_description_${c}.txt ../../../../scenes/scene_${c}/
+			mv scene_output_${c}.txt ../../../../scenes/scene_${c}/
+
 		else
-			mkdir scenes/scene_${c}
-			mv scene_description_${c}.txt scenes/scene_${c}/
-			mv scene_output_${c}.txt scenes/scene_${c}/
+			mkdir ../../../../scenes/scene_${c}
+			mv scene_description_${c}.txt ../../../../scenes/scene_${c}/
+			mv scene_output_${c}.txt ../../../../scene_descriptions/scene_${c}/
 		fi
-	fi 
+
+		echo "Moved file to scene descriptions folder"
+	fi
 
 done
 
